@@ -5,9 +5,7 @@ import json
 
 app = Flask(__name__)
 
-# ------------------------------
 # Config for each screening type
-# ------------------------------
 TEST_CONFIGS = {
     "depression": {
         "label": "Major Depressive Disorder",
@@ -52,7 +50,7 @@ def classify(prob, test_type):
     calibration-specific thresholds for each disorder.
     """
 
-    # ---- Depression thresholds ----
+    # Depression thresholds, based on calibration data
     # Low:        p < 0.50
     # Moderate:   0.50 ≤ p < 0.60
     # High:       0.60 ≤ p < 0.70
@@ -67,7 +65,7 @@ def classify(prob, test_type):
         else:
             return "Low Possibility"
 
-    # ---- Anxiety thresholds ----
+    # Anxiety thresholds, based on calibration data
     # Low:        p < 0.65
     # Moderate:   0.65 ≤ p < 0.80
     # High:       0.80 ≤ p < 0.90
@@ -82,7 +80,7 @@ def classify(prob, test_type):
         else:
             return "Low Possibility"
 
-    # ---- PTSD thresholds ----
+    # PTSD thresholds, based on calibration data
     # Low:        p < 0.40
     # Moderate:   0.40 ≤ p < 0.60
     # High:       0.60 ≤ p < 0.80
@@ -109,9 +107,8 @@ def classify(prob, test_type):
             return "Low Possibility"
 
 
-# ---------------------------------
-# Load all models + questions once
-# ---------------------------------
+
+# Loads all models + questions once
 MODELS = {}
 
 for key, cfg in TEST_CONFIGS.items():
@@ -126,15 +123,16 @@ for key, cfg in TEST_CONFIGS.items():
     }
 
 
-# ----------------- Routes -----------------
+# Routes Below
 
 @app.route("/")
 def home():
-    # Landing page – choose which test
+    # Landing page (choose which test)
     return render_template("home.html", test_configs=TEST_CONFIGS)
 
 
 @app.route("/screen/<test_type>", methods=["GET", "POST"])
+# The different screenings themselves
 def screen(test_type):
     if test_type not in MODELS:
         return redirect(url_for("home"))
