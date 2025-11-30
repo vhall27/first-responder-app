@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>First Responder Mental Health Screenings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at top, #1d4ed8 0, #020617 55%);
+      --card-bg: rgba(15, 23, 42, 0.96);
+      --panel-bg: rgba(15, 23, 42, 0.98);
+      --chip-bg: #020617;
+      --chip-border: #1f2937;
+      --accent: #6366f1;
+      --accent-soft: rgba(99, 102, 241, 0.15);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --text-soft: #cbd5f5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text",
+        "SF Pro Display", "Segoe UI", sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 0;
+    }
+
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      padding: 0 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 1.5rem;
+      padding: 2rem 2rem 1.75rem;
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.75);
+      border: 1px solid #1f2937;
+      backdrop-filter: blur(12px);
+    }
+
+    /* Header */
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.4rem;
+      flex: 1 1 100%;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.9rem;
+      letter-spacing: 0.01em;
+      font-weight: 650;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      max-width: 540px;
+      line-height: 1.4;
+    }
+
+    .header-tag {
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: var(--accent-soft);
+      border: 1px solid rgba(129, 140, 248, 0.4);
+      color: #e0e7ff;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 0.25rem;
+    }
+
+    /* Chips */
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.75rem;
+    }
+
+    .chip {
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--chip-border);
+      background: linear-gradient(135deg, #020617, #030712);
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    /* Intro */
+
+    .intro {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      max-width: 700px;
+      margin: 0 auto 1.75rem;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .intro strong {
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+
+    /* Section titles */
+
+    .section-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Tests grid */
+
+    .tests-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+      margin-top: 0.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .test-card {
+      background: #020617;
+      border-radius: 1rem;
+      padding: 1rem;
+      border: 1px solid #1f2937;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .test-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.22), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.18s ease-out;
+      pointer-events: none;
+    }
+
+    .test-card:hover::before {
+      opacity: 1;
+    }
+
+    .test-title {
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .test-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      min-height: 3em;
+      line-height: 1.4;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #f9fafb;
+      box-shadow: 0 8px 25px rgba(79, 70, 229, 0.5);
+      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, opacity 0.1s;
+      letter-spacing: 0.02em;
+    }
+
+    .btn span {
+      font-size: 0.95rem;
+      transform: translateY(0.5px);
+    }
+
+    .btn:hover {
+      opacity: 0.97;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 30px rgba(79, 70, 229, 0.65);
+    }
+
+    /* Resources section */
+
+    .resources-section {
+      margin-top: 0.5rem;
+    }
+
+    .resources-panel {
+      background: var(--panel-bg);
+      border-radius: 1.15rem;
+      padding: 1rem;
+      border: 1px solid #1f2937;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .resources-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .resources-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .resources-tagline {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    .status-pill {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.18);
+      color: #bbf7d0;
+      border: 1px solid rgba(74, 222, 128, 0.5);
+      white-space: nowrap;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .resource-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      font-size: 0.78rem;
+    }
+
+    .resource-item {
+      padding: 0.55rem 0.7rem;
+      border-radius: 0.75rem;
+      border: 1px solid #1f2937;
+      background: #020617;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .resource-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .resource-name {
+      font-weight: 500;
+      font-size: 0.78rem;
+    }
+
+    .resource-type {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .resource-action {
+      font-size: 0.78rem;
+      margin-top: 0.2rem;
+      line-height: 1.4;
+    }
+
+    .resource-link {
+      color: #a5b4fc;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .resource-link:hover {
+      text-decoration: underline;
+    }
+
+    .resource-emphasis {
+      color: #fecaca;
+      font-weight: 500;
+    }
+
+    .crisis-box {
+      margin-top: 0.25rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(248, 113, 113, 0.8);
+      background: radial-gradient(circle at left, rgba(248, 113, 113, 0.22), #020617 70%);
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .crisis-title {
+      font-weight: 600;
+      margin-bottom: 0.08rem;
+      color: #fecaca;
+    }
+
+    .crisis-row {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 0.75rem;
+      row-gap: 0.15rem;
+      margin-top: 0.2rem;
+    }
+
+    .pill-danger {
+      border-radius: 999px;
+      padding: 0.08rem 0.45rem;
+      border: 1px solid rgba(248, 113, 113, 0.8);
+      font-size: 0.7rem;
+      color: #fecaca;
+    }
+
+    /* Disclaimer */
+
+    .disclaimer {
+      margin-top: 1.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.5;
+      max-width: 780px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .disclaimer strong {
+      color: #e5e7eb;
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding: 1.5rem 1.25rem 1.5rem;
+        border-radius: 1.25rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      .subtitle {
+        font-size: 0.85rem;
+      }
+      .status-pill {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <!-- Top header -->
+      <div class="header">
+        <div class="title-block">
+          <h1>First Responder Mental Health Screenings</h1>
+          <p class="subtitle">
+            Built for firefighters, EMS, law enforcement, dispatch, and emergency hospital staff.
+            Anonymous, quick, and research-oriented; not a formal diagnosis.
+          </p>
+        </div>
+        <div class="header-tag">
+          Early check-ins, not clinical diagnoses.
+        </div>
+      </div>
+
+      <!-- Audience chips -->
+      <div class="chips">
+        <span class="chip">Fire &amp; EMS</span>
+        <span class="chip">Law Enforcement</span>
+        <span class="chip">Emergency Medicine</span>
+        <span class="chip">Dispatch &amp; Communications</span>
+      </div>
+
+      <!-- Intro text -->
+      <p class="intro">
+        Choose a screening below to answer a short set of questions tailored to first responders.
+        You’ll see an estimated probability and a category such as <strong>Low</strong>, <strong>Moderate</strong>,
+        <strong>High</strong>, or <strong>Very High</strong> possibility. Use this as a starting point for
+        conversations with peers, leadership, or a mental health professional.
+      </p>
+
+      <!-- Screenings section -->
+      <section>
+        <div class="section-title">
+          Screenings
+        </div>
+        <div class="tests-grid">
+          {% for key, cfg in test_configs.items() %}
+            <div class="test-card">
+              <div>
+                <div class="test-title">{{ cfg.label }} Screening</div>
+                <div class="test-desc">
+                  {% if cfg.description %}
+                    {{ cfg.description }}
+                  {% else %}
+                    Quick screening tailored to first responders.
+                  {% endif %}
+                </div>
+              </div>
+              <a class="btn" href="{{ url_for('screen', test_type=key) }}">
+                Start {{ cfg.label }} Test <span>➜</span>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Resources & Support section (below screenings) -->
+      <section class="resources-section">
+        <div class="section-title">
+          Resources &amp; Support
+        </div>
+        <div class="resources-panel">
+          <div class="resources-header">
+            <div>
+              <div class="resources-title">You don’t have to navigate this alone</div>
+              <div class="resources-tagline">
+                Consider saving a few of these options before or after you take a screening.
+              </div>
+            </div>
+            <div class="status-pill">
+              Support available 24/7
+            </div>
+          </div>
+
+          <div class="resource-list">
+            <div class="resource-item">
+              <div class="resource-label-row">
+                <div>
+                  <div class="resource-name">Crisis Support (U.S.)</div>
+                  <div class="resource-type">Phone / Text / Chat</div>
+                </div>
+              </div>
+              <div class="resource-action">
+                Call or text <span class="resource-emphasis">988</span> in the U.S. for the Suicide &amp; Crisis Lifeline,
+                or visit <a class="resource-link" href="https://988lifeline.org" target="_blank" rel="noreferrer">988lifeline.org</a>.
+              </div>
+            </div>
+
+            <div class="resource-item">
+              <div class="resource-label-row">
+                <div>
+                  <div class="resource-name">Peer Support / EAP</div>
+                  <div class="resource-type">Local / Department resources</div>
+                </div>
+              </div>
+              <div class="resource-action">
+                Many departments have a <span class="resource-emphasis">peer support team</span> or Employee Assistance Program (EAP).
+                If it’s safe to do so, consider reaching out to a trusted supervisor, union rep, or peer-support lead.
+              </div>
+            </div>
+
+            <div class="resource-item">
+              <div class="resource-label-row">
+                <div>
+                  <div class="resource-name">First Responder–Focused Therapists</div>
+                  <div class="resource-type">Therapy / Counseling</div>
+                </div>
+              </div>
+              <div class="resource-action">
+                Look for clinicians who specifically mention experience with <span>first responders</span>,
+                <span>PTSD</span>, or <span>trauma-focused therapies</span>. If available, your EAP or union may keep a vetted list.
+              </div>
+            </div>
+          </div>
+
+          <div class="crisis-box">
+            <div class="crisis-title">If you feel unsafe right now</div>
+            <div>
+              If you’re thinking about self-harm, feel like you might hurt someone, or are otherwise in immediate danger:
+              <div class="crisis-row">
+                <span class="pill-danger">Call 988 (U.S.)</span>
+                <span class="pill-danger">Contact local emergency services</span>
+                <span class="pill-danger">Reach out to someone you trust</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        This tool is for education and self-reflection only and <strong>does not provide a diagnosis</strong>
+        or replace talking with a licensed mental health professional. If you are thinking about self-harm,
+        harming others, or feel unsafe, contact local emergency services or a crisis line immediately.
+      </div>
+    </div>
+  </div>
+</body>
+</html>

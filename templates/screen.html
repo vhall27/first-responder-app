@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ test_label }} Screening – First Responders</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at top, #1d4ed8 0, #020617 55%);
+      --card-bg: rgba(15, 23, 42, 0.97);
+      --surface: #0b1220;
+      --border-subtle: #1f2937;
+      --border-strong: #2f3e53;
+      --accent: #6366f1;
+      --accent-soft: rgba(99, 102, 241, 0.22);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-soft: #cbd5e1;
+      --danger: #fb7185;
+      --success: #22c55e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text",
+        "SF Pro Display", "Segoe UI", sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.75rem 1.5rem 2.5rem;
+    }
+
+    /* Top nav */
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .top-nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.4rem;
+      border-radius: 999px;
+      transition: color 0.18s ease, background-color 0.18s ease;
+    }
+
+    .top-nav a::before {
+      content: "←";
+      font-size: 0.85rem;
+      transform: translateY(-0.5px);
+    }
+
+    .top-nav a:hover {
+      color: #e2e8f0;
+      background-color: rgba(15, 23, 42, 0.55);
+    }
+
+    /* Card */
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 1.4rem;
+      padding: 1.9rem 1.75rem 1.9rem;
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      box-shadow: 0 26px 70px rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(14px);
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding: 1.5rem 1.25rem 1.6rem;
+        border-radius: 1.1rem;
+      }
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.7rem;
+      font-weight: 650;
+      text-align: center;
+      color: #f9fafb;
+      letter-spacing: 0.015em;
+    }
+
+    .subtitle {
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+      text-align: center;
+      color: var(--text-soft);
+      line-height: 1.45;
+    }
+
+    .badge {
+      display: block;
+      margin: 0.9rem auto 0.4rem;
+      padding: 0.25rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--border-strong);
+      font-size: 0.75rem;
+      color: var(--text-soft);
+      width: max-content;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    /* Progress */
+
+    .progress {
+      margin-top: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+
+    #progress-label {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 0.45rem;
+      border-radius: 999px;
+      background: #020617;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #22c55e, #4ade80, #6366f1);
+      box-shadow: 0 0 16px rgba(79, 70, 229, 0.7);
+      transition: width 0.25s ease;
+    }
+
+    form {
+      margin-top: 1.5rem;
+    }
+
+    .questions-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .questions-wrapper.hidden {
+      display: none;
+    }
+
+    .question {
+      display: none;
+      padding: 1.25rem;
+      border-radius: 0.9rem;
+      background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.15), #020617 65%);
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+      opacity: 0;
+      transform: translateY(9px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .question.visible {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .question-label {
+      margin-bottom: 0.9rem;
+      text-align: center;
+      font-size: 1rem;
+      color: #e2e8f0;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .yn-btn {
+      padding: 0.6rem 1.7rem;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.18s ease;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      min-width: 5.2rem;
+    }
+
+    .yn-btn:hover {
+      background: #111827;
+      border-color: #4b5563;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.7);
+    }
+
+    .yn-btn.yes.active {
+      background: #14b8a6;
+      border-color: #0d9488;
+      color: #022c22;
+      box-shadow: 0 10px 22px rgba(45, 212, 191, 0.55);
+    }
+
+    .yn-btn.no.active {
+      background: #fb7185;
+      border-color: #f43f5e;
+      color: #4c0519;
+      box-shadow: 0 10px 22px rgba(248, 113, 113, 0.55);
+    }
+
+    .submit-row {
+      margin-top: 1.4rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .submit-btn {
+      padding: 0.7rem 1.9rem;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #f8fafc;
+      font-weight: 600;
+      font-size: 0.98rem;
+      cursor: pointer;
+      transition: 0.18s ease;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      box-shadow: 0 14px 35px rgba(79, 70, 229, 0.7);
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #818cf8, #6366f1);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(79, 70, 229, 0.8);
+    }
+
+    /* Results */
+
+    .result {
+      margin-top: 2rem;
+      padding: 1.3rem 1.15rem 1.3rem;
+      border-radius: 1rem;
+      background: #020617;
+      border: 1px solid #1f2937;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.78);
+    }
+
+    .prob {
+      font-size: 0.95rem;
+      color: var(--text-soft);
+      margin-bottom: 0.4rem;
+    }
+
+    .result-heading {
+      font-size: 1.05rem;
+      margin-top: 0.1rem;
+      color: #e5e7eb;
+    }
+
+    .result-heading strong {
+      font-weight: 600;
+    }
+
+    .summary {
+      margin-top: 1.1rem;
+    }
+
+    .summary-title {
+      font-size: 0.92rem;
+      color: #e5e7eb;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .summary-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 250px;
+      overflow-y: auto;
+      border-radius: 0.6rem;
+      background: #020617;
+      border: 1px solid #1e293b;
+    }
+
+    .summary-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.83rem;
+      border-bottom: 1px solid #0b1120;
+    }
+
+    .summary-list li:last-child {
+      border-bottom: none;
+    }
+
+    .summary-q {
+      flex: 1;
+      color: var(--text-soft);
+    }
+
+    .summary-a {
+      font-weight: 600;
+      min-width: 3rem;
+      text-align: right;
+      color: #e5e7eb;
+    }
+
+    .disclaimer {
+      margin-top: 0.9rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      .subtitle {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="top-nav">
+      <a href="{{ url_for('home') }}">All screenings</a>
+      <span style="color:#94a3b8;">For first responders</span>
+    </div>
+
+    <div class="card">
+      <h1>{{ test_label }} Screening</h1>
+      <div class="subtitle">{{ test_description }}</div>
+      <div class="badge">Fire, EMS, Law Enforcement, Emergency Medicine</div>
+
+      <div class="progress">
+        <div id="progress-label"></div>
+        <div class="progress-bar">
+          <div class="progress-bar-fill" id="progress-bar-fill"></div>
+        </div>
+      </div>
+
+      <form method="post" id="screen-form">
+        <div class="questions-wrapper {% if result_text %}hidden{% endif %}">
+          {% for q in questions %}
+            {% set idx = loop.index0 %}
+            {% set name = 'q' ~ idx %}
+            {% set current = answers.get(name, '') %}
+
+            <div class="question" data-index="{{ idx }}">
+              <div class="question-label">{{ q }}</div>
+
+              <div class="btn-group">
+                <button type="button"
+                        class="yn-btn yes {% if current == '1' %}active{% endif %}"
+                        onclick="setAnswer({{ idx }}, 1)">
+                  Yes
+                </button>
+
+                <button type="button"
+                        class="yn-btn no {% if current == '0' and current != '' %}active{% endif %}"
+                        onclick="setAnswer({{ idx }}, 0)">
+                  No
+                </button>
+              </div>
+
+              <input type="hidden" name="{{ name }}" id="field-{{ idx }}" value="{{ current }}">
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if not result_text %}
+        <div class="submit-row">
+          <button type="submit" name="submit_btn" value="run_test" class="submit-btn">
+            View Results
+          </button>
+        </div>
+        {% endif %}
+      </form>
+
+      {% if result_text %}
+      <div class="result">
+        <div class="prob">Estimated probability: <strong>{{ probability }}</strong></div>
+        <div class="result-heading"><strong>Result:</strong> {{ result_text }}</div>
+
+        {% if summary_answers %}
+        <div class="summary">
+          <div class="summary-title">Your answers</div>
+          <ul class="summary-list">
+            {% for item in summary_answers %}
+            <li>
+              <span class="summary-q">{{ item.question }}</span>
+              <span class="summary-a">{{ item.answer }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        <div class="disclaimer">
+          This tool is for research and education and is not a diagnostic service.
+          If you feel unsafe, overwhelmed, or unable to cope, please reach out to a mental health professional,
+          peer support team, or local emergency services.
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    const TOTAL_QUESTIONS = {{ questions|length }};
+    const HAS_RESULT = {{ 'true' if result_text else 'false' }};
+    let currentIndex = 0;
+
+    function initQuestions() {
+      const label = document.getElementById('progress-label');
+      const bar = document.getElementById('progress-bar-fill');
+
+      if (HAS_RESULT) {
+        if (label) {
+          label.textContent = `Completed • ${TOTAL_QUESTIONS} of ${TOTAL_QUESTIONS} questions answered`;
+        }
+        if (bar) {
+          bar.style.width = '100%';
+        }
+        return;
+      }
+
+      const first = document.querySelector('.question[data-index="0"]');
+      if (first) {
+        first.classList.add('visible');
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const label = document.getElementById('progress-label');
+      const bar = document.getElementById('progress-bar-fill');
+      const answeredCount = currentIndex + 1;
+      const pct = Math.round((answeredCount / TOTAL_QUESTIONS) * 100);
+
+      if (label) {
+        label.textContent = `Question ${answeredCount} of ${TOTAL_QUESTIONS}`;
+      }
+      if (bar) {
+        bar.style.width = pct + '%';
+      }
+    }
+
+    function setAnswer(idx, value) {
+      const field = document.getElementById('field-' + idx);
+      if (!field) return;
+      field.value = String(value);
+
+      const questionEl = document.querySelector('.question[data-index="' + idx + '"]');
+      if (!questionEl) return;
+
+      const yesBtn = questionEl.querySelector('.yn-btn.yes');
+      const noBtn = questionEl.querySelector('.yn-btn.no');
+
+      if (yesBtn && noBtn) {
+        yesBtn.classList.remove('active');
+        noBtn.classList.remove('active');
+        if (value === 1) {
+          yesBtn.classList.add('active');
+        } else {
+          noBtn.classList.add('active');
+        }
+      }
+
+      if (idx === currentIndex && idx < TOTAL_QUESTIONS - 1) {
+        currentIndex++;
+        const next = document.querySelector('.question[data-index="' + currentIndex + '"]');
+        if (next) {
+          next.classList.add('visible');
+          next.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        updateProgress();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initQuestions);
+  </script>
+
+</body>
+</html>
